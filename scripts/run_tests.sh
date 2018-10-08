@@ -23,10 +23,23 @@ if [[ -z $TESTCLIENTSERVER ]]; then
     fi
     $GAP tst/testall.g
 else
+    sudo pip install --upgrade pip
+    pip install --user openmath
+    pip install --user scscp
+
     mkdir -p $COVDIR
+
+    echo "Testing GAP Client"
     $GAP --cover $COVDIR/test-server.coverage -A tst/scscp/server.g --nointeract &
     sleep 10
     $GAP --cover $COVDIR/test-client.coverage -A tst/scscp/client.g --nointeract
     kill %%
+
+    echo "Testing Python Client"
+    $GAP --cover $COVDIR/test-server-2.coverage -A tst/scscp/server.g --nointeract &
+    sleep 10
+    python tst/scscp/client.py
+    kill %%
+
 fi
 exit 0
